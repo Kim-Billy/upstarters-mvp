@@ -3,6 +3,7 @@ import { Row, Col, List, Avatar } from 'antd'
 import Axios from 'axios'
 
 import SideVideo from './Sections/SideVideo'
+import Comment from './Sections/Comments'
 
 
 
@@ -10,9 +11,10 @@ function VideoDetailPage(props) {
 
     // app.js router설정한 "video/:videoId"에서 뒤에 id를 가져옴
     const videoId = props.match.params.videoId
-    const variable = { videoId: videoId }
-
     const [VideoDetail, setVideoDetail] = useState([])
+    const [CommentLists, setCommentLists] = useState([])
+    
+    const variable = { videoId: videoId }
 
     useEffect(() => {
         Axios.post('/api/video/getVideoDetail', variable)
@@ -24,9 +26,22 @@ function VideoDetailPage(props) {
                 }
             })
 
+        Axios.post('/api/comment/getComments', variable)
+            .then(response => {
+                if (response.data.success) {
+                    setCommentLists(response.data.comments)
+                } else {
+                    alert('코멘트 정보를 가져오는 것을 실패 하였습니다.')
+                }
+            })
     })
 
-    console.log(VideoDetail);
+    // 업데이트 된 코멘트 내용 추가하기
+    const refreshFunction = (newComment) => {
+        setCommentLists(CommentLists.concat(newComment))
+    }
+
+    // console.log(VideoDetail);
 
     // videoDetail에서 하위 내용에 접근할때 랜더링이 먼저 되서 발생하는 에러 방지
     if (VideoDetail.writer) {
@@ -51,6 +66,7 @@ function VideoDetailPage(props) {
                         </List.Item>
 
                         {/* Comments */}
+                        <Comment CommentLists={CommentLists} postId={videoId} refreshFunction={refreshFunction}/>
 
                     </div>
                 </Col>
