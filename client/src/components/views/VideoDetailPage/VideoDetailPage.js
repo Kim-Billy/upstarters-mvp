@@ -4,7 +4,7 @@ import Axios from 'axios'
 
 import SideVideo from './Sections/SideVideo'
 import Comment from './Sections/Comments'
-
+import LikeDislikes from './Sections/LikeDislike'
 
 
 function VideoDetailPage(props) {
@@ -47,15 +47,14 @@ function VideoDetailPage(props) {
     if (VideoDetail.writer) {
         return (
             // 전체 24사이즈, 메인 18, 사이드목록 6
-            <Row gutter={[16, 16]}>
+            <Row >
                 <Col lg={18} xs={24}>
 
-                    <div style={{ width: '100%', padding: '3rem 4rem' }}>
+                <div className="postPage" style={{ width: '100%', padding: '3rem 4em' }}>
                         {/* src 커스터마이징 수정 필요함 */}
-                        <video style={{ width: '100%' }} src={`http://localhost:5000/${VideoDetail.filePath}`} controls />
-
+                        <video style={{ width: '100%' }} src={`http://localhost:5000/${VideoDetail.filePath}`} controls></video>
                         <List.Item
-                            actions
+                            actions={[<LikeDislikes video videoId={videoId} userId={localStorage.getItem('userId')}/>]}
                         >
                             <List.Item.Meta
                                 avatar={<Avatar src={VideoDetail.writer.image} />}
